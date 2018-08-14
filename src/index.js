@@ -5,7 +5,7 @@ const PdfHandler = require('@src/PdfHandler.js')
 
 async function main() {
   const urls = await new Scrape(URL)
-  await new PdfHandler(urls)
+  const files = await new PdfHandler(urls)
 }
 
 main()

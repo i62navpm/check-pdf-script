@@ -7,12 +7,14 @@ module.exports = class PdfHandler {
   constructor(urls) {
     this.urls = urls
 
-    this.activate()
+    return this.activate()
   }
 
   async activate() {
-    this.compareUrlFilenames(this.urls)
-    this.compareFilesSize(this.urls)
+    const differentFilesSet = new Set(this.compareUrlFilenames(this.urls))
+    const differentSizedSet = new Set(await this.compareFilesSize(this.urls))
+
+    return [...new Set([...differentFilesSet, ...differentSizedSet])]
   }
 
   compareUrlFilenames(urls) {
@@ -30,6 +32,7 @@ module.exports = class PdfHandler {
       } catch (err) {
         if (err.code === 'ENOENT') {
           this.saveFile(list, urls[list])
+          lists.push(list)
         }
       }
     }
