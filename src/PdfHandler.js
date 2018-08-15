@@ -2,6 +2,7 @@ const urlFilenames = require('@urlFilenames/urlFilenames.json')
 const axios = require('axios')
 const fs = require('fs')
 const { PDF_FOLDER } = require('@config/config')
+const logger = require('@src/winston.js')
 
 module.exports = class PdfHandler {
   constructor(urls) {
@@ -11,10 +12,20 @@ module.exports = class PdfHandler {
   }
 
   async activate() {
-    const differentFilesSet = new Set(this.compareUrlFilenames(this.urls))
-    const differentSizedSet = new Set(await this.compareFilesSize(this.urls))
+    logger.info('Handling the pdfs to search changes....')
 
-    return [...new Set([...differentFilesSet, ...differentSizedSet])]
+    let result = []
+    try {
+      const differentFilesSet = new Set(this.compareUrlFilenames(this.urls))
+      const differentSizedSet = new Set(await this.compareFilesSize(this.urls))
+      result = [...new Set([...differentFilesSet, ...differentSizedSet])]
+    } catch (err) {
+      logger.error('Pdf handle ERROR', err)
+    } finally {
+      logger.info('Finish handle searching changes', { result })
+    }
+
+    return result
   }
 
   compareUrlFilenames(urls) {
@@ -25,12 +36,15 @@ module.exports = class PdfHandler {
     const lists = []
     for (let list in urls) {
       try {
+        logger.info(`Downloading the file [${list}]`)
         const { data } = await this.downloadFile(urls[list])
 
+        logger.info(`Looking at the size [${list}]`)
         if (data.length !== fs.statSync(`${PDF_FOLDER}/${list}.pdf`).size)
           lists.push(list)
       } catch (err) {
         if (err.code === 'ENOENT') {
+          logger.info(`Creating the file [${list}]`)
           await this.saveFile(list, urls[list])
           lists.push(list)
         }

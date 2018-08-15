@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer')
+const logger = require('@src/winston.js')
 
 module.exports = class Scrape {
   constructor(URL) {
@@ -10,11 +11,21 @@ module.exports = class Scrape {
   }
 
   async activate() {
-    await this.initBrowser()
-    await this.initPage()
-    await this.goToURL()
-    const result = await this.startScraping()
-    await this.closeBrowser()
+    logger.info('Scraping the web searching changes....')
+
+    let result = []
+    try {
+      await this.initBrowser()
+      await this.initPage()
+      await this.goToURL()
+      result = await this.startScraping()
+      await this.closeBrowser()
+    } catch (err) {
+      logger.error('Scrape ERROR', err)
+    } finally {
+      logger.info('Finish scrape changes', { result })
+    }
+
     return result
   }
   async initBrowser() {
