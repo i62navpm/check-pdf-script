@@ -31,7 +31,7 @@ module.exports = class PdfHandler {
           lists.push(list)
       } catch (err) {
         if (err.code === 'ENOENT') {
-          this.saveFile(list, urls[list])
+          await this.saveFile(list, urls[list])
           lists.push(list)
         }
       }
