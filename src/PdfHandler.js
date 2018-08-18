@@ -19,6 +19,10 @@ module.exports = class PdfHandler {
       const differentFilesSet = new Set(this.compareUrlFilenames(this.urls))
       const differentSizedSet = new Set(await this.compareFilesSize(this.urls))
       result = [...new Set([...differentFilesSet, ...differentSizedSet])]
+
+      for (const list of result) {
+        await this.saveFile(list, this.urls[list])
+      }
     } catch (err) {
       logger.error('Pdf handle ERROR', err)
     } finally {
@@ -44,8 +48,6 @@ module.exports = class PdfHandler {
           lists.push(list)
       } catch (err) {
         if (err.code === 'ENOENT') {
-          logger.info(`Creating the file [${list}]`)
-          await this.saveFile(list, urls[list])
           lists.push(list)
         }
       }
@@ -55,6 +57,7 @@ module.exports = class PdfHandler {
   }
 
   async saveFile(filename, url) {
+    logger.info(`Saving the file [${filename}] in disk`)
     const result = await this.downloadFile(url)
 
     fs.writeFileSync(`${PDF_FOLDER}/${filename}.pdf`, result.data)
