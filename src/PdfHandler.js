@@ -33,6 +33,7 @@ module.exports = class PdfHandler {
   }
 
   compareUrlFilenames(urls) {
+    logger.info(`Looking at the url`)
     return Object.keys(urls).filter(list => urlFilenames[list] !== urls[list])
   }
 
