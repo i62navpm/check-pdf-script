@@ -1,4 +1,13 @@
-require('module-alias/register')
+const path = require('path')
+const moduleAlias = require('module-alias')
+
+moduleAlias.addAliases({
+  '@src': path.join(__dirname, '/src/'),
+  '@config': path.join(__dirname, '/config/'),
+  '@checkScript': path.join(__dirname, '/checkScript/'),
+  '@urlFilenames': path.join(__dirname, '/urlFilenames/'),
+})
+
 const { URL } = require('@config/config.js')
 const Scrape = require('@src/Scrape.js')
 const PdfHandler = require('@src/PdfHandler.js')
