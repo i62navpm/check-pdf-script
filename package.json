@@ -1,9 +1,9 @@
 {
-  "name": "check-pdf-script",
-  "version": "1.0.0",
-  "main": "src/index.js",
+  "name": "@i62navpm/check-pdf-script",
+  "version": "0.0.1",
+  "main": "index.js",
   "scripts": {
-    "dev": "node src/index.js"
+    "dev": "node index.js"
   },
   "author": "Manuel Navarro Pérez",
   "license": "ISC",

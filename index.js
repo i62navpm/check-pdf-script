@@ -5,17 +5,19 @@ const PdfHandler = require('@src/PdfHandler.js')
 const StorageHandler = require('@src/StorageHandler.js')
 const logger = require('@src/winston.js')
 
-async function main() {
+async function checkResources() {
   logger.info('**** Starting to check the files ****')
   try {
     const urls = await new Scrape(URL)
     const files = await new PdfHandler(urls)
     await new StorageHandler(files)
+    return files
   } catch (err) {
     logger.error(err)
+    return err
   } finally {
     logger.info('**** Finish to check the files ****')
   }
 }
 
-main()
+module.exports = { checkResources }

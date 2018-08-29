@@ -4,7 +4,7 @@ const { combine, timestamp, json, colorize } = format
 const options = {
   file: {
     level: 'info',
-    filename: `./log/app.log`,
+    filename: `./log/appCheck.log`,
     format: combine(timestamp(), json()),
     handleExceptions: true,
   },
