@@ -71,7 +71,7 @@ module.exports = class PdfHandler {
     const result = await this.downloadFile(url)
 
     try {
-      this.storage
+      await this.storage
         .bucket(BUCKET_PDF_TMP)
         .file(`${filename}.pdf`)
         .save(result.data)
