@@ -1,5 +1,5 @@
 const axios = require('axios')
-const fs = require('fs')
+const Storage = require('@google-cloud/storage')
 const urlFilenames = require('@urlFilenames/urlFilenames.json')
 const { BUCKET_PDF_TMP } = require('@config/config')
 const logger = require('@src/winston.js')
@@ -7,6 +7,7 @@ const logger = require('@src/winston.js')
 module.exports = class PdfHandler {
   constructor(urls) {
     this.urls = urls
+    this.storage = new Storage()
 
     return this.activate()
   }
@@ -43,12 +44,12 @@ module.exports = class PdfHandler {
       try {
         logger.info(`Downloading the file [${list}]`)
         const { data } = await this.downloadFile(urls[list])
+        const { size } = await this.getMetadata(`${list}.pdf`)
 
         logger.info(`Looking at the size [${list}]`)
-        if (data.length !== fs.statSync(`${BUCKET_PDF_TMP}/${list}.pdf`).size)
-          lists.push(list)
+        if (data.length !== +size) lists.push(list)
       } catch (err) {
-        if (err.code === 'ENOENT') {
+        if (err.code === 404) {
           lists.push(list)
         }
       }
@@ -57,11 +58,28 @@ module.exports = class PdfHandler {
     return lists
   }
 
+  async getMetadata(filename) {
+    const [metadata] = await this.storage
+      .bucket(BUCKET_PDF_TMP)
+      .file(filename)
+      .getMetadata()
+    return metadata
+  }
+
   async saveFile(filename, url) {
     logger.info(`Saving the file [${filename}] in disk`)
     const result = await this.downloadFile(url)
 
-    fs.writeFileSync(`${BUCKET_PDF_TMP}/${filename}.pdf`, result.data)
+    try {
+      this.storage
+        .bucket(BUCKET_PDF_TMP)
+        .file(`${filename}.pdf`)
+        .save(result.data)
+      logger.info(`Upload "${filename}" succesfully!`)
+    } catch (err) {
+      logger.error('Pdf upload ERROR', err)
+    }
+
     return filename
   }
 
