@@ -29,7 +29,9 @@ module.exports = class Scrape {
     return result
   }
   async initBrowser() {
-    this.browser = await puppeteer.launch()
+    this.browser = await puppeteer.launch({
+      args: ['--no-sandbox'],
+    })
   }
 
   async initPage() {
