@@ -1,6 +1,6 @@
 {
   "name": "@i62navpm/check-pdf-script",
-  "version": "0.0.1",
+  "version": "0.0.15",
   "main": "index.js",
   "scripts": {
     "dev": "node index.js"
