@@ -28,11 +28,11 @@ module.exports = class StorageHandler {
     return Promise.all(
       files.map(file =>
         this.storage
-          .bucket(BUCKET_NAME)
+          .bucket(BUCKET_PDF_TMP)
           .file(`${file}.pdf`)
-          .copy(this.storage.bucket(BUCKET_PDF_TMP).file(`${file}.pdf`))
+          .copy(this.storage.bucket(BUCKET_NAME).file(`${file}.pdf`))
           .then(() => {
-            logger.info(`[${file}] uploaded to ${BUCKET_PDF_TMP}.`)
+            logger.info(`[${file}] uploaded to ${BUCKET_NAME}.`)
           })
           .catch(err => {
             logger.error('Upload ERROR', err)
