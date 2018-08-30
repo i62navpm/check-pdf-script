@@ -1,6 +1,7 @@
-const urlFilenames = require('@urlFilenames/urlFilenames.json')
 const axios = require('axios')
 const fs = require('fs')
+const path = require('path')
+const urlFilenames = require('@urlFilenames/urlFilenames.json')
 const { PDF_FOLDER } = require('@config/config')
 const logger = require('@src/winston.js')
 
@@ -45,7 +46,11 @@ module.exports = class PdfHandler {
         const { data } = await this.downloadFile(urls[list])
 
         logger.info(`Looking at the size [${list}]`)
-        if (data.length !== fs.statSync(`${PDF_FOLDER}/${list}.pdf`).size)
+        if (
+          data.length !==
+          fs.statSync(`${path.join(__dirname, '/../', PDF_FOLDER)}/${list}.pdf`)
+            .size
+        )
           lists.push(list)
       } catch (err) {
         if (err.code === 'ENOENT') {
@@ -61,7 +66,10 @@ module.exports = class PdfHandler {
     logger.info(`Saving the file [${filename}] in disk`)
     const result = await this.downloadFile(url)
 
-    fs.writeFileSync(`${PDF_FOLDER}/${filename}.pdf`, result.data)
+    fs.writeFileSync(
+      `${path.join(__dirname, '/../', PDF_FOLDER)}/${filename}.pdf`,
+      result.data
+    )
     return filename
   }
 

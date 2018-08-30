@@ -1,6 +1,8 @@
+const path = require('path')
 const Storage = require('@google-cloud/storage')
 const { BUCKET_NAME, PDF_FOLDER } = require('@config/config')
 const logger = require('@src/winston.js')
+
 module.exports = class StorageHandler {
   constructor(files) {
     this.files = files
@@ -28,7 +30,7 @@ module.exports = class StorageHandler {
       files.map(file =>
         this.storage
           .bucket(BUCKET_NAME)
-          .upload(`${PDF_FOLDER}/${file}.pdf`)
+          .upload(`${path.join(__dirname, '/../', PDF_FOLDER)}/${file}.pdf`)
           .then(() => {
             logger.info(`[${file}] uploaded to ${BUCKET_NAME}.`)
           })
