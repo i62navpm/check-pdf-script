@@ -17,9 +17,8 @@ module.exports = class PdfHandler {
 
     let result = []
     try {
-      const differentFilesSet = new Set(this.compareUrlFilenames(this.urls))
       const differentSizedSet = new Set(await this.compareFilesSize(this.urls))
-      result = [...new Set([...differentFilesSet, ...differentSizedSet])]
+      result = [...new Set([...differentSizedSet])]
 
       for (const list of result) {
         await this.saveFile(list, this.urls[list])

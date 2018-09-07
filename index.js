@@ -28,4 +28,5 @@ async function checkResources() {
   }
 }
 
+checkResources()
 module.exports = { checkResources }
