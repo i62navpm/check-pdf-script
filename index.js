@@ -22,8 +22,7 @@ async function checkResources() {
     await new StorageHandler(files)
     return files
   } catch (err) {
-    logger.error(err)
-    return err
+    logger.error(err.message)
   } finally {
     logger.info('**** Finish to check the files ****')
   }

@@ -26,6 +26,7 @@ module.exports = class PdfHandler {
       }
     } catch (err) {
       logger.error('Pdf handle ERROR', err)
+      throw new Error(err)
     } finally {
       logger.info('Finish handle searching changes', { result })
     }

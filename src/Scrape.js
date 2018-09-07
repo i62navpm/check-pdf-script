@@ -21,7 +21,9 @@ module.exports = class Scrape {
       result = await this.startScraping()
       await this.closeBrowser()
     } catch (err) {
+      await this.closeBrowser()
       logger.error('Scrape ERROR', err)
+      throw new Error(err)
     } finally {
       logger.info('Finish scrape changes', { result })
     }

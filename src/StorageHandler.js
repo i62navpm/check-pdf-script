@@ -17,6 +17,7 @@ module.exports = class StorageHandler {
       result = await this.uploadFiles(this.files)
     } catch (err) {
       logger.error('Files handle ERROR', err)
+      throw new Error(err)
     } finally {
       logger.info('Finish handle uploading files')
     }
@@ -36,6 +37,7 @@ module.exports = class StorageHandler {
           })
           .catch(err => {
             logger.error('Upload ERROR', err)
+            throw new Error(err)
           })
       )
     )
