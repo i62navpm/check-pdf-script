@@ -11,7 +11,8 @@ moduleAlias.addAliases({
 const { URL } = require('@config/config.js')
 const Scrape = require('@src/Scrape.js')
 const PdfHandler = require('@src/PdfHandler.js')
-const StorageHandler = require('@src/StorageHandler.js')
+const cloudNotifications = require('@src/cloudNotifications.js')()
+// const StorageHandler = require('@src/StorageHandler.js')
 const logger = require('@src/winston.js')
 
 async function checkResources() {
@@ -19,7 +20,8 @@ async function checkResources() {
   try {
     const urls = await new Scrape(URL)
     const files = await new PdfHandler(urls)
-    await new StorageHandler(files)
+    if (files.length) await cloudNotifications.sendNotifications(files)
+    // await new StorageHandler(files)
     return files
   } catch (err) {
     logger.error(err.message)
