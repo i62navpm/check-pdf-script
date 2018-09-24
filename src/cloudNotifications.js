@@ -21,7 +21,7 @@ module.exports = function() {
 
   async function sendEmails(listName) {
     const users = await getFirestoreUsers()
-    return axios.post(`${url}/sendNotifications`, {
+    return axios.post(`${url}/send`, {
       listName,
       users,
     })
